@@ -1,10 +1,10 @@
-'''Example configuration file for an ee->ZH->mumubb analysis in heppy, with the FCC-ee
+'''Example configuration file for an ee->WW->had+lep analysis in heppy, with the FCC-ee
 
 While studying this file, open it in ipython as well as in your editor to 
 get more information: 
 
 ipython
-from analysis_ee_ZH_cfg import * 
+from analysis_ee_WW_cfg import * 
 '''
 
 import os
@@ -27,26 +27,18 @@ random.seed(0xdeadbeef)
 # definition of the collider
 from heppy.configuration import Collider
 Collider.BEAMS = 'ee'
-Collider.SQRTS = 91.
+Collider.SQRTS = 240.
 
 # input definition
-import glob
-files = glob.glob(os.environ['HEPPY']+'/test/ee_Z_ddbar_*.root')
-ee_Z_ddbar = cfg.Component(
-    'ee_Z_ddbar',
-    files = files 
-    )
-ee_Z_ddbar.splitFactor = len(ee_Z_ddbar.files)
-
-ee_Z_bbbar = cfg.Component(
-    'ee_Z_bbbar',
+comp = cfg.Component(
+    'ee_WW_hadLep',
     files = [
-        'ee_Z_bbbar.root'
+        'ee_WW_hadLep.root'
     ]
 )
+selectedComponents = [comp]
 
 
-selectedComponents = [ee_Z_bbbar]
 
 # read FCC EDM events from the input root file(s)
 # do help(Reader) for more information
@@ -74,26 +66,33 @@ sum_gen = cfg.Analyzer(
 ########################################################
 # Building Zeds
 # help(ResonanceBuilder) for more information
-from heppy.analyzers.ResonanceBuilder import ResonanceBuilder
-zeds = cfg.Analyzer(
-    ResonanceBuilder,
-    output = 'zeds',
-    leg_collection = 'jets',
-    pdgid = 23
-)
+#from heppy.analyzers.ResonanceBuilder import ResonanceBuilder
+#zeds = cfg.Analyzer(
+#    ResonanceBuilder,
+#    output = 'zeds',
+#    leg_collection = 'jets',
+#    pdgid = 23
+#)
 ########################################################
 
 # Analysis-specific ntuple producer
-# please have a look at the ZTreeProducer class
-from heppy.analyzers.ZTreeProducer import ZTreeProducer
-tree = cfg.Analyzer(
-    ZTreeProducer,
-    zeds = 'zeds',
-    jets = 'jets'
+# please have a look at the WWTreeProducer class
+from heppy.analyzers.WWTreeProducer import WWTreeProducer
+WW_tree = cfg.Analyzer(
+    WWTreeProducer
+#    zeds = 'zeds',
+#    jets = 'jets'
    # higgses = 'higgses',
    # recoil  = 'recoil'
 )
 ########################################################
+
+# Here I need to builds WW's
+# use lepton builder
+# count mu
+# build jets
+# only accep 1 mu   check in code "not zeds"
+# make recoil -> nu
 
 
 
@@ -121,8 +120,7 @@ sequence = cfg.Sequence(
     sum_particles,
     sum_gen, 
     zed_tree,
-    zeds,
-    tree
+    WW_tree
     )
 
 # Specifics to read FCC events 

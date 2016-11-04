@@ -80,6 +80,19 @@ class Field(DetectorElement):
         mat = material.void
         super(Field, self).__init__('tracker', volume,  mat)
         
+##################################################################
+# Copied from CMS.py
+class BeamPipe(DetectorElement):
+
+    def __init__(self):
+        #Material Seamless AISI 316 LN, External diameter 53 mm, Wall thickness 1.5 mm (hors cms) X0 1.72 cm
+        #in CMS, radius 25 mm (?), tchikness 8mm, X0 35.28 cm : berylluim
+        factor = 1.0
+        volume = VolumeCylinder('beampipe', 2.5e-2*factor+0.8e-3, 1.98, 2.5e-2*factor, 1.9785 )
+        mat = material.Material('BeamPipe', 35.28e-2, 0)
+        super(BeamPipe, self).__init__('beampipe', volume, mat)
+#################################################################
+
         
 class Perfect(Detector):
     '''A detector with the geometry of CMS and the same cluster size, 
@@ -92,5 +105,6 @@ class Perfect(Detector):
         self.elements['ecal'] = ECAL()
         self.elements['hcal'] = HCAL()
         self.elements['field'] = Field(3.8)
+        self.elements['beampipe'] = BeamPipe() ### Copied from CMS.py
 
 perfect = Perfect()
