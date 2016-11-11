@@ -63,23 +63,56 @@ sum_gen = cfg.Analyzer(
     particles='gen_particles_stable'
 )
 
+
+#######################################################
+# From Workdir/analysis_ee_ZH_cfg.py 
+
+# Use a Filter to select leptons from the output of papas.
+# Currently, we're treating electrons and muons transparently.
+# we could use two different instances for the Filter module
+# to get separate collections of electrons and muons
+# help(Filter) for more information
+from heppy.analyzers.Filter import Filter
+leptons_true = cfg.Analyzer(
+    Filter,
+    'sel_leptons',
+    output = 'leptons_true',
+    # output = 'leptons',
+    input_objects = 'gen_particles',
+    filter_func = lambda ptc: ptc.e()>10. and abs(ptc.pdgid()) in [11, 13]
+)
+
+# Make jets from the particles not used to build the best zed.
+# Here the event is forced into 2 jets to target ZH, H->b bbar)
+# help(JetClusterizer) for more information
+from heppy.analyzers.fcc.JetClusterizer import JetClusterizer
+jets = cfg.Analyzer(
+    JetClusterizer,
+    output = 'jet',
+    particles = 'gen_particles',
+    fastjet_args = dict( njets = 2)  
+)
+
 ########################################################
-# Building Zeds
+# Building Ws
 # help(ResonanceBuilder) for more information
-#from heppy.analyzers.ResonanceBuilder import ResonanceBuilder
-#zeds = cfg.Analyzer(
-#    ResonanceBuilder,
-#    output = 'zeds',
-#    leg_collection = 'jets',
-#    pdgid = 23
-#)
+from heppy.analyzers.ResonanceBuilder import ResonanceBuilder
+Ws = cfg.Analyzer(
+    ResonanceBuilder,
+    output = 'Ws',
+    leg_collection = 'leptons_true',
+    pdgid = 24
+)
 ########################################################
 
 # Analysis-specific ntuple producer
 # please have a look at the WWTreeProducer class
 from heppy.analyzers.WWTreeProducer import WWTreeProducer
 WW_tree = cfg.Analyzer(
-    WWTreeProducer
+    WWTreeProducer,
+    leptons = 'leptons_true',
+    jets = 'jets',
+    Ws = 'Ws'
 #    zeds = 'zeds',
 #    jets = 'jets'
    # higgses = 'higgses',
@@ -119,8 +152,11 @@ sequence = cfg.Sequence(
                       2, None),
     sum_particles,
     sum_gen, 
+    leptons_true,  #
+#    jets,  #
+#    Ws,
     zed_tree,
-    WW_tree
+    WW_tree  #
     )
 
 # Specifics to read FCC events 

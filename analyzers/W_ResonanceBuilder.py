@@ -4,7 +4,7 @@ from heppy.particles.tlv.resonance import Resonance2 as Resonance
 import pprint 
 import itertools
 
-mass = {23: 91, 25: 125, 24: 80} #changed 24
+mass = {24: 80}
 
 class ResonanceBuilder(Analyzer):
     '''Builds resonances. 

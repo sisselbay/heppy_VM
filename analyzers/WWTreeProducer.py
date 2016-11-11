@@ -13,13 +13,17 @@ class WWTreeProducer(Analyzer):
                                         'mytree.root']),
                               'recreate')
         self.tree = Tree( 'events', '')
+        bookJet(self.tree, 'jet1')
+        bookJet(self.tree, 'jet2')
+        bookLepton(self.tree, 'lepton_1')
+        bookLepton(self.tree, 'lepton_2')
+        bookLepton(self.tree, 'lepton_3')
+        bookLepton(self.tree, 'lepton_4')
         bookParticle(self.tree, 'W1')
         bookParticle(self.tree, 'W2')
         #bookParticle(self.tree, 'recoil')
         bookJet(self.tree, 'W1_1')
         bookJet(self.tree, 'W1_2')
-        #bookJet(self.tree, 'jet3')
-        #bookJet(self.tree, 'jet4')
         bookLepton(self.tree, 'W2_1')
         bookLepton(self.tree, 'W2_2')
         #bookParticle(self.tree, 'higgs')
@@ -29,23 +33,39 @@ class WWTreeProducer(Analyzer):
        
     def process(self, event):
         self.tree.reset()
+        
+#        Ws = getattr(event, self.cfg_ana.Ws)
+#        if len(Ws)>0:
+#            W = Ws[0]
+#            fillParticle(self.tree, 'W1', W)
+#            fillLepton(self.tree, 'W1_1', W.legs[0])
+#            fillLepton(self.tree, 'W1_2', W.legs[1])
+
+
+        leptons = getattr(event, self.cfg_ana.leptons_true)
+        for ilepton, lepton in enumerate(leptons):
+            if ilepton==4:
+                break
+            fillLepton(self.tree, 'lepton{ilepton}'.format(ilepton=ilepton+1), lepton)
+
         #recoil = getattr(event, self.cfg_ana.recoil)
         #fillParticle(self.tree, 'recoil', recoil)        
         #misenergy = getattr(event, self.cfg_ana.misenergy)
         #fillParticle(self.tree, 'misenergy', misenergy )        
 
-#        zeds = getattr(event, self.cfg_ana.zeds)
-#        if len(zeds)>0:
-#            zed = zeds[0]
-#            fillParticle(self.tree, 'zed', zed)
-#            fillJet(self.tree, 'zed_1', zed.legs[0])
-#            fillJet(self.tree, 'zed_2', zed.legs[1])
+        #zeds = getattr(event, self.cfg_ana.zeds)
+        #if len(zeds)>0:
+        #    zed = zeds[0]
+        #    fillParticle(self.tree, 'zed', zed)
+        #    fillJet(self.tree, 'zed_1', zed.legs[0])
+        #    fillJet(self.tree, 'zed_2', zed.legs[1])
 
-        #jets = getattr(event, self.cfg_ana.jets)
-        #for ijet, jet in enumerate(jets):
-        #    if ijet==4:
-        #        break
-        #    fillJet(self.tree, 'jet{ijet}'.format(ijet=ijet+1), jet)
+#        jets = getattr(event, self.cfg_ana.jets)
+#        for ijet, jet in enumerate(jets):
+#            if ijet==4:
+#                break
+#            fillJet(self.tree, 'jet{ijet}'.format(ijet=ijet+1), jet)
+        
         #higgses = getattr(event, self.cfg_ana.higgses)
         #if len(higgses)>0:
         #    higgs = higgses[0]

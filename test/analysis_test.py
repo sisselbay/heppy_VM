@@ -38,15 +38,15 @@ ee_Z_ddbar = cfg.Component(
     )
 ee_Z_ddbar.splitFactor = len(ee_Z_ddbar.files)
 
-ee_Z_bbbar = cfg.Component(
-    'ee_Z_bbbar',
+ee_WW = cfg.Component(
+    'ee_WW_hadLep',
     files = [
-        'ee_Z_bbbar.root'
+        'ee_WW_hadLep.root'
     ]
 )
 
 
-selectedComponents = [ee_Z_ddbar]
+selectedComponents = [ee_WW]
 
 # read FCC EDM events from the input root file(s)
 # do help(Reader) for more information
